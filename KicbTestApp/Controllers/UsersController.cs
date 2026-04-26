@@ -56,6 +56,12 @@ namespace KicbTestApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Email,DateOfBirth")] User user)
         {
+            // Проверка на дубликат Email
+            if (_context.Users.Any(u => u.Email == user.Email))
+            {
+                ModelState.AddModelError("Email", "Пользователь с таким Email уже существует");
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Add(user);

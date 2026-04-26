@@ -59,10 +59,21 @@ namespace KicbTestApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,PhoneNumber,UserId")] Phone phone)
         {
-            // Удали проверку ModelState на время теста, чтобы проверить, пойдет ли запись
-            _context.Add(phone);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            // Проверяем, есть ли уже такой номер в базе
+            if (_context.Phones.Any(p => p.PhoneNumber == phone.PhoneNumber))
+            {
+                ModelState.AddModelError("PhoneNumber", "Этот номер телефона уже зарегистрирован.");
+            }
+
+            if (ModelState.IsValid)
+            {
+                _context.Add(phone);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Name", phone.UserId);
+            return View(phone);
         }
 
         // GET: Phones/Edit/5
