@@ -59,14 +59,10 @@ namespace KicbTestApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,PhoneNumber,UserId")] Phone phone)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(phone);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", phone.UserId);
-            return View(phone);
+            // Удали проверку ModelState на время теста, чтобы проверить, пойдет ли запись
+            _context.Add(phone);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Phones/Edit/5

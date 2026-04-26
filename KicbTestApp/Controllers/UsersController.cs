@@ -22,7 +22,7 @@ namespace KicbTestApp.Controllers
         // GET: Users
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Users.ToListAsync());
+            return View(await _context.Users.Include(u => u.Phones).ToListAsync());
         }
 
         // GET: Users/Details/5
